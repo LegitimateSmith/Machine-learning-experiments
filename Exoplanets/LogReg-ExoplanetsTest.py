@@ -21,7 +21,7 @@ parameter = []
 sumFunction = [0]*dataFrame.shape[0]
 
 for i in range(1, dataFrame.shape[1]):
-    parameter.append(random.randint(-4,3)+random.random())
+    parameter.append(random.randint(-2,1)+random.random())
 
 
 def additionFunction(sumFunction, parameter):
@@ -55,8 +55,8 @@ def parameterAdjust(parameter, sumFunction, successRate):
             successRateTrial2 = 0
             successRateTrial3 = 0
 
-            parameterTrial1.append(parameter[i] + 2*timesImproved)
-            parameterTrial2.append(parameter[i] - 2*timesImproved)
+            parameterTrial1.append(parameter[i] + 2*timesImproved + random.random())
+            parameterTrial2.append(parameter[i] - 2*timesImproved - random.random())
             parameterTrial3.append((parameter[i]/(2*timesImproved)))
 
             for j in range(dataFrame.shape[0]):
@@ -65,23 +65,30 @@ def parameterAdjust(parameter, sumFunction, successRate):
                 sumFunctionTrial3[j] = sumFunction[j] + (parameterTrial3[i] - parameter[i])*dataFrame.iloc[j,i]
 
             successRateTrial1 = evalutorFunction(sumFunctionTrial1, successRateTrial1)
-            successRateTrial2 = evalutorFunction(sumFunctionTrial2, successRateTrial2)
-            successRateTrial3 = evalutorFunction(sumFunctionTrial3, successRateTrial3)
 
             if successRateTrial1 >= successRate:
                 parameter[i] = parameterTrial1[i]
                 successRate = successRateTrial1
                 improvement = True
-            elif successRateTrial2 >= successRate:
+                continue
+
+            successRateTrial2 = evalutorFunction(sumFunctionTrial2, successRateTrial2)
+            
+            if successRateTrial2 >= successRate:
                 parameter[i] = parameterTrial2[i]
                 successRate = successRateTrial2
                 improvement = True
-            elif successRateTrial3 >= successRate:
+                continue
+
+            successRateTrial3 = evalutorFunction(sumFunctionTrial3, successRateTrial3)
+
+            if successRateTrial3 >= successRate:
                 parameter[i] = parameterTrial3[i]
                 successRate = successRateTrial3
                 improvement = True
-            else:
-                timesImproved += 1
+                continue
+
+            timesImproved += 1
 
     return parameter, successRate
 
@@ -99,3 +106,5 @@ while counterForTrials < 3:
     counterForTrials = counterForTrials + 1
     print("Trials Completed:", counterForTrials)
     print("Current Accuracy:", successPercentage, "%")
+
+print(parameter)
